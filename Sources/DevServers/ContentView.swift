@@ -186,12 +186,15 @@ struct ServerRow: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 6) {
+                        // 이름이 길면 종류 배지 대신 이름 쪽이 줄어들며 끝에 말줄임(…) 표시
                         Text(server.projectName)
                             .font(.system(size: 13, weight: .semibold))
                             .foregroundStyle(.white.opacity(0.92))
                             .lineLimit(1)
-                            .help(server.command)
+                            .truncationMode(.tail)
+                            .help("\(server.projectName)\n\(server.command)")
                         KindPlate(kind: server.kind, isNode: server.isNode)
+                            .fixedSize()
                     }
                     HStack(spacing: 5) {
                         ForEach(server.ports, id: \.self) { port in
@@ -213,7 +216,8 @@ struct ServerRow: View {
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 8)
-            .overlay(Color.white.opacity(isHovering ? 0.03 : 0))
+            // 하이라이트 레이어가 버튼 위를 덮어 클릭을 가로채지 않도록 히트 테스트에서 제외
+            .overlay(Color.white.opacity(isHovering ? 0.03 : 0).allowsHitTesting(false))
         }
         .opacity(isTerminating ? 0.6 : 1)
         .onHover { isHovering = $0 }
@@ -233,7 +237,7 @@ struct ServerRow: View {
                 .disabled(server.cwd == nil)
                 .help("Finder에서 열기\n\(server.displayPath)")
 
-            PowerButton(help: "서버 종료 (SIGTERM → 3초 후 SIGKILL)") { store.terminate(server) }
+            PowerButton(help: "서버 종료") { store.terminate(server) }
                 .disabled(isTerminating)
         }
     }

@@ -9,8 +9,8 @@ if [[ "${UNIVERSAL:-0}" == "1" ]]; then
     ARCH_FLAGS=(--arch arm64 --arch x86_64)
 fi
 
-swift build -c release --product DevServers "${ARCH_FLAGS[@]}"
-BIN="$(swift build -c release --show-bin-path "${ARCH_FLAGS[@]}")/DevServers"
+swift build -c release --product DevServers ${ARCH_FLAGS[@]+"${ARCH_FLAGS[@]}"}
+BIN="$(swift build -c release --show-bin-path ${ARCH_FLAGS[@]+"${ARCH_FLAGS[@]}"})/DevServers"
 
 APP="build/DevServers.app"
 rm -rf "$APP"

@@ -1,0 +1,79 @@
+# DevServers
+
+로컬에서 띄워 둔 개발 서버(`next dev`, `vite`, `storybook` …)가 **어느 프로젝트의 서버인지, 포트가 뭔지** 한눈에 보고 바로 끌 수 있는 macOS 메뉴바 앱.
+
+서버 랙 콘셉트로 만들었다. 메뉴바 아이콘의 LED는 서버 수만큼 켜지고, 서버가 CPU를 많이 쓸수록 빠르게 깜빡인다.
+
+## 기능
+
+- **메뉴바 아이콘**: 3칸짜리 서버 랙
+  - 초록 전원 LED: 실행 중인 서버 수만큼 위 칸부터 켜짐 (최대 3칸)
+  - 빨강 활동 LED: 서버 CPU 사용량 합계에 비례해 깜빡임 (0% → 0.9초 간격, 100%+ → 0.07초 간격)
+- **서버 목록 패널**: 서버 하나가 1U 랙 장비 한 대로 표시됨
+  - 프로젝트명(`package.json`의 `name`, 없으면 폴더명), 종류(Next.js / Vite / Storybook …), 포트, PID
+  - 포트 LCD 창 클릭 → `http://localhost:포트` 열기
+  - 🧭 브라우저로 열기 · 📁 Finder에서 열기 (툴팁에 경로 표시) · ⏻ 서버 종료
+- **종료**: 프로세스 그룹에 `SIGTERM` → 3초 뒤에도 살아 있으면 `SIGKILL`
+- **전체 종료**: 확인 띠를 거친 뒤 목록의 모든 서버 종료
+- **ALL PROCS 스위치**: 기본은 node 프로세스만, 켜면 LISTEN 중인 모든 프로세스 표시
+- 패널을 열 때와 3초마다 자동 갱신 (스캔은 백그라운드에서 실행)
+- Dock 아이콘 없음 (`LSUIElement`), 시스템 설정의 "동작 줄이기"를 켜면 LED 깜빡임 멈춤
+
+## 요구 사항
+
+- macOS 14 이상
+- Xcode 또는 Swift 5.10 이상 툴체인 (`xcode-select -p`로 확인)
+
+## 빌드 & 실행
+
+```bash
+git clone https://github.com/silqwer/devservers.git
+cd devservers
+./build.sh                     # build/DevServers.app 생성
+open build/DevServers.app
+```
+
+로그인 시 자동 실행하려면 `build/DevServers.app`을 `/Applications`로 복사한 뒤 **시스템 설정 → 일반 → 로그인 항목**에 추가한다.
+
+앱 종료는 패널 오른쪽 아래 **⏏ QUIT** 버튼 또는 `⌘Q`. 앱을 꺼도 실행 중인 서버는 그대로 유지된다.
+
+### 터미널에서 스캔 결과만 확인
+
+```bash
+swift run devservers-scan          # node 서버만
+swift run devservers-scan --all    # LISTEN 중인 모든 프로세스
+```
+
+```
+PID     PGID    PORTS          KIND        CPU%   PROJECT                    PATH
+38272   38236   3000           Next.js     0.0    @cv-front/typist           ~/…/apps/typist
+        └ next-server (v15.5.24)
+```
+
+## 동작 방식
+
+| 단계 | 명령 | 용도 |
+|---|---|---|
+| 1 | `lsof -iTCP -sTCP:LISTEN -n -P` | LISTEN 포트와 PID 수집 (PID 기준으로 묶음) |
+| 2 | `lsof -a -p <PID,…> -d cwd -Fpn` | 작업 디렉터리 확인 |
+| 3 | `<cwd>/package.json` | 프로젝트명 읽기 |
+| 4 | `ps -o pid=,pgid=,%cpu=,command= -p <PID,…>` | 프로세스 그룹, CPU, 실행 명령 → 종류 라벨 |
+
+여러 PID는 쉼표로 묶어 한 번에 조회하므로 스캔 한 번에 약 0.3초 걸린다.
+
+다른 프로세스를 조회하고 종료해야 하므로 **App Sandbox를 사용하지 않는다**. 앱 자신의 프로세스 그룹이나 시스템 그룹(PGID ≤ 1)은 그룹 단위로 종료하지 않고 해당 PID만 종료한다.
+
+## 구조
+
+```
+Sources/
+├─ DevServersCore/    스캔 · 종료 로직 (UI 없음)
+├─ devservers-scan/   터미널 확인용 CLI
+└─ DevServers/        SwiftUI 메뉴바 앱 (MenuBarExtra .window)
+Resources/Info.plist  LSUIElement 등 번들 설정
+build.sh              .app 번들 생성 + ad-hoc 서명
+```
+
+## 라이선스
+
+[MIT](LICENSE)

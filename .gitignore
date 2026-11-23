@@ -1,0 +1,10 @@
+# SwiftPM / 빌드 산출물
+.build/
+build/
+.swiftpm/
+*.xcodeproj/
+DerivedData/
+
+# 도구 설정
+.serena/
+.DS_Store

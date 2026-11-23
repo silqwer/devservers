@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DevServers — 로컬 개발 서버 메뉴바 앱</title>
+  <meta name="description" content="next dev, vite, storybook… 로컬에서 띄워 둔 개발 서버를 메뉴바에서 한눈에 보고 바로 끄는 macOS 앱">
+  <meta property="og:title" content="DevServers">
+  <meta property="og:description" content="로컬 개발 서버를 메뉴바에서 한눈에 보고 바로 끄는 macOS 앱">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --chassis: #0b0c0f;
+      --plate-top: #2a2c31;
+      --plate-bottom: #1b1d21;
+      --ear: #15161a;
+      --line: rgba(255, 255, 255, 0.08);
+      --text: #e8e9ec;
+      --muted: #9a9ca3;
+      --engraved: #8c8f96;
+      --green: #3deb7a;
+      --red: #ff5450;
+      --amber: #ffba38;
+      --lcd-bg: #05130a;
+      --lcd: #61f58f;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      --sans: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(1200px 500px at 50% -120px, rgba(61, 235, 122, 0.08), transparent 70%),
+        var(--chassis);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--lcd); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+    /* ---------- rack primitives ---------- */
+    .unit {
+      position: relative;
+      display: grid;
+      grid-template-columns: 18px 1fr 18px;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.7), 0 12px 30px rgba(0, 0, 0, 0.35);
+    }
+    .ear {
+      background: var(--ear);
+      display: flex; flex-direction: column; justify-content: space-between; align-items: center;
+      padding: 10px 0;
+      border-right: 1px solid rgba(0, 0, 0, 0.6);
+    }
+    .ear:last-child { border-right: 0; border-left: 1px solid rgba(0, 0, 0, 0.6); }
+    .screw {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: linear-gradient(135deg, #8a8a8a, #3a3a3a);
+      position: relative;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.8);
+    }
+    .screw::after {
+      content: ""; position: absolute; left: 1.5px; right: 1.5px; top: 3.5px; height: 1px;
+      background: rgba(0, 0, 0, 0.75); transform: rotate(45deg);
+    }
+    .plate {
+      background: linear-gradient(var(--plate-top), var(--plate-bottom));
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.55);
+      padding: 22px 24px;
+      min-width: 0;
+    }
+    .led {
+      display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+      background: #333; box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.5);
+      flex: none;
+    }
+    .led.on.green { background: var(--green); box-shadow: 0 0 8px var(--green); }
+    .led.on.red { background: var(--red); box-shadow: 0 0 8px var(--red); }
+    .led.blink { animation: blink 0.5s steps(1) infinite; }
+    .led.blink.fast { animation-duration: 0.18s; }
+    @keyframes blink { 50% { background: #333; box-shadow: none; } }
+    @media (prefers-reduced-motion: reduce) { .led.blink { animation: none; } }
+    .lcd {
+      display: inline-block;
+      font-family: var(--mono); font-weight: 700;
+      color: var(--lcd); text-shadow: 0 0 6px rgba(97, 245, 143, 0.7);
+      background: var(--lcd-bg);
+      border: 1px solid #000; border-radius: 3px;
+      padding: 1px 7px;
+    }
+    .engraved {
+      font-family: var(--mono); font-weight: 800; letter-spacing: 0.22em;
+      color: var(--engraved); text-transform: uppercase;
+      text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.8);
+    }
+    .vents { display: flex; gap: 4px; }
+    .vents i { display: block; width: 3px; height: 26px; border-radius: 2px; background: rgba(0, 0, 0, 0.6); box-shadow: 1px 0 0 rgba(255, 255, 255, 0.06); }
+
+    /* ---------- buttons ---------- */
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--sans); font-weight: 700; font-size: 16px;
+      padding: 12px 20px; border-radius: 8px;
+      color: var(--text);
+      background: linear-gradient(#34363c, #222429);
+      border: 1px solid #000;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 0 rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+    }
+    .btn:hover { text-decoration: none; filter: brightness(1.1); }
+    .btn:active { transform: translateY(1px); box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.4); }
+    .btn.primary { background: linear-gradient(#2fbf62, #1d8f45); color: #fff; }
+    .btn .sub { font-weight: 500; font-size: 13px; opacity: 0.8; }
+
+    /* ---------- header ---------- */
+    header.top { padding: 18px 0; }
+    header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+    .brand svg { flex: none; }
+    nav a { color: var(--muted); font-size: 14px; margin-left: 18px; }
+    nav a:hover { color: var(--text); text-decoration: none; }
+
+    /* ---------- hero ---------- */
+    .hero { padding: 56px 0 40px; text-align: center; }
+    .hero .badge { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+    .hero h1 { font-size: clamp(34px, 6vw, 56px); line-height: 1.15; margin: 0 0 16px; letter-spacing: -0.02em; }
+    .hero h1 .accent { color: var(--green); text-shadow: 0 0 24px rgba(61, 235, 122, 0.35); }
+    .hero p.lead { font-size: clamp(16px, 2.2vw, 19px); color: var(--muted); max-width: 640px; margin: 0 auto 30px; }
+    .cta { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+    .meta { margin-top: 14px; font-size: 13px; color: var(--muted); }
+
+    .showcase { margin: 48px auto 0; max-width: 560px; }
+    .menubar {
+      display: flex; align-items: center; justify-content: flex-end; gap: 18px;
+      padding: 10px 18px; border-radius: 10px;
+      background: linear-gradient(#3a3c42, #2a2c31);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .menubar .fake { width: 18px; height: 14px; border-radius: 3px; background: rgba(255, 255, 255, 0.18); }
+    .menubar img { height: 48px; image-rendering: auto; border-radius: 6px; }
+    .caption { text-align: center; font-size: 13px; color: var(--muted); margin-top: 12px; }
+
+    /* ---------- sections ---------- */
+    section { padding: 44px 0; }
+    h2 { font-size: 26px; margin: 0 0 6px; letter-spacing: -0.01em; }
+    .section-sub { color: var(--muted); margin: 0 0 24px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+    .feature .plate { padding: 18px 20px; height: 100%; }
+    .feature h3 { display: flex; align-items: center; gap: 10px; font-size: 16px; margin: 0 0 6px; }
+    .feature p { margin: 0; color: var(--muted); font-size: 14.5px; }
+
+    .legend { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+    .legend li { display: flex; align-items: center; gap: 12px; color: var(--muted); }
+    .legend b { color: var(--text); font-weight: 600; }
+
+    ol.steps { counter-reset: s; list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+    ol.steps > li { counter-increment: s; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; align-items: start; }
+    ol.steps > li::before {
+      content: counter(s, decimal-leading-zero);
+      font-family: var(--mono); font-weight: 700; color: var(--lcd); background: var(--lcd-bg);
+      border: 1px solid #000; border-radius: 4px; text-align: center; padding: 2px 0; font-size: 13px;
+      text-shadow: 0 0 6px rgba(97, 245, 143, 0.6);
+    }
+    ol.steps p { margin: 0; }
+    .note { margin-top: 18px; padding: 14px 16px; border-radius: 8px; background: rgba(255, 186, 56, 0.08); border: 1px solid rgba(255, 186, 56, 0.25); color: #f3d79b; font-size: 14px; }
+    .note b { color: var(--amber); }
+
+    pre {
+      margin: 10px 0 0; padding: 14px 16px; border-radius: 8px; overflow-x: auto;
+      background: #07080a; border: 1px solid #000; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      font-family: var(--mono); font-size: 13.5px; color: #d6d8dd; line-height: 1.6;
+    }
+    code { font-family: var(--mono); font-size: 0.92em; background: rgba(255, 255, 255, 0.06); padding: 1px 5px; border-radius: 4px; }
+    pre code { background: none; padding: 0; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--engraved); font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+    td code { white-space: nowrap; }
+    .table-scroll { overflow-x: auto; }
+
+    footer { padding: 40px 0 60px; color: var(--muted); font-size: 13px; text-align: center; }
+
+    @media (max-width: 640px) {
+      nav { display: none; }
+      .plate { padding: 18px 16px; }
+      .unit { grid-template-columns: 12px 1fr 12px; }
+      .screw { width: 6px; height: 6px; }
+      .vents { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="brand engraved" href="#">
+        <svg width="20" height="18" viewBox="0 0 18 16" aria-hidden="true">
+          <g fill="none" stroke="#cfd1d6" stroke-width="1.1">
+            <rect x="2" y="1.3" width="14" height="3.6" rx="1.2"/><rect x="2" y="6.2" width="14" height="3.6" rx="1.2"/><rect x="2" y="11.1" width="14" height="3.6" rx="1.2"/>
+            <path d="M10 3.1h4M10 8h4M10 12.9h4" stroke-linecap="round"/>
+          </g>
+          <g><circle cx="4.4" cy="3.1" r="1.2" fill="#3deb7a"/><circle cx="4.4" cy="8" r="1.2" fill="#3deb7a"/><circle cx="7.2" cy="8" r="1.2" fill="#ff5450"/></g>
+        </svg>
+        DEVSERVERS
+      </a>
+      <nav>
+        <a href="#features">기능</a>
+        <a href="#install">설치</a>
+        <a href="#source">소스 빌드</a>
+        <a href="https://github.com/silqwer/devservers">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero wrap">
+      <div class="badge"><span class="led on green"></span> macOS 14+ · 무료 · 오픈소스 (MIT)</div>
+      <h1>띄워 둔 개발 서버,<br><span class="accent">메뉴바에서 한눈에</span></h1>
+      <p class="lead">
+        <code>next dev</code>, <code>vite</code>, <code>storybook</code>… 어느 프로젝트의 서버가 몇 번 포트에서 돌고 있는지 확인하고, 클릭 한 번으로 끄세요.
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/silqwer/devservers/releases/latest/download/DevServers.zip">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg>
+          다운로드 <span class="sub">DevServers.zip</span>
+        </a>
+        <a class="btn" href="https://github.com/silqwer/devservers">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+          GitHub에서 보기
+        </a>
+      </div>
+      <div class="meta">Apple Silicon · Intel 유니버설 · 약 400KB</div>
+
+      <div class="showcase">
+        <div class="menubar" aria-label="메뉴바 미리보기">
+          <span class="fake"></span><span class="fake"></span>
+          <img src="assets/menubar.gif" alt="서버가 하나씩 켜질 때마다 랙 아이콘의 초록 LED가 늘어나고 빨간 활동 LED가 깜빡이는 메뉴바 아이콘">
+          <span class="fake"></span>
+        </div>
+        <div class="caption">서버가 켜질 때마다 랙에 불이 들어오고, CPU를 많이 쓸수록 빨간 LED가 빠르게 깜빡여요.</div>
+      </div>
+    </div>
+
+    <section id="features">
+      <div class="wrap">
+        <h2>서버 하나 = 랙 장비 한 대</h2>
+        <p class="section-sub">메뉴바 아이콘을 누르면 실행 중인 서버가 1U 장비처럼 쌓여서 보여요.</p>
+
+        <div class="unit" aria-hidden="true">
+          <div class="ear"><span class="screw"></span><span class="screw"></span></div>
+          <div class="plate" style="display:flex;align-items:center;gap:16px;">
+            <div style="display:grid;gap:7px;"><span class="led on green"></span><span class="led on red blink"></span></div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <b style="font-size:16px;">my-blog</b>
+                <span style="font-family:var(--mono);font-size:10px;font-weight:700;border:1px solid rgba(232,233,236,.5);border-radius:3px;padding:0 5px;color:#e8e9ec;letter-spacing:.06em;">NEXT.JS</span>
+              </div>
+              <div style="margin-top:6px;display:flex;align-items:center;gap:8px;"><span class="lcd">:3001</span><span style="font-family:var(--mono);font-size:12px;color:var(--engraved);">PID 41230</span></div>
+            </div>
+            <div class="vents"><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="ear"><span class="screw"></span><span class="screw"></span></div>
+        </div>
+
+        <div class="grid" style="margin-top:16px;">
+          <div class="unit feature"><div class="ear"><span class="screw"></span><span class="screw"></span></div><div class="plate">
+            <h3><span class="led on green"></span>어느 프로젝트인지 바로</h3>
+            <p><code>package.json</code>의 이름(없으면 폴더명)과 Next.js · Vite · Storybook 같은 종류를 함께 보여줘요.</p>
+          </div><div class="ear"><span class="screw"></span><span class="screw"></span></div></div>
+
+          <div class="unit feature"><div class="ear"><span class="screw"></span><span class="screw"></span></div><div class="plate">
+            <h3><span class="lcd" style="font-size:12px;">:5173</span>포트를 누르면 브라우저로</h3>
+            <p>포트 LCD를 누르면 <code>localhost:포트</code>가 열려요. Finder에서 프로젝트 폴더 열기도 한 번에.</p>
+          </div><div class="ear"><span class="screw"></span><span class="screw"></span></div></div>
+
+          <div class="unit feature"><div class="ear"><span class="screw"></span><span class="screw"></span></div><div class="plate">
+            <h3><span class="led on red"></span>깔끔하게 종료</h3>
+            <p>⏻ 버튼은 프로세스 그룹에 SIGTERM을 보내고, 3초 안에 안 꺼지면 SIGKILL. <code>pnpm dev</code> 같은 부모 프로세스까지 정리돼요.</p>
+          </div><div class="ear"><span class="screw"></span><span class="screw"></span></div></div>
+
+          <div class="unit feature"><div class="ear"><span class="screw"></span><span class="screw"></span></div><div class="plate">
+            <h3><span class="led on green blink"></span>항상 최신 상태</h3>
+            <p>메뉴를 열 때와 3초마다 백그라운드에서 다시 스캔해요. Dock 아이콘 없이 메뉴바에만 조용히 있어요.</p>
+          </div><div class="ear"><span class="screw"></span><span class="screw"></span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>LED 읽는 법</h2>
+        <p class="section-sub">메뉴바 아이콘과 패널의 LED는 같은 규칙을 따라요.</p>
+        <ul class="legend">
+          <li><span class="led on green"></span><b>초록 전원 LED</b> — 서버가 켜져 있어요. 메뉴바에서는 서버 수만큼 위 칸부터 켜져요 (최대 3칸).</li>
+          <li><span class="led on red blink"></span><b>빨강 활동 LED</b> — CPU 사용량에 비례해 깜빡여요. 한가하면 0.9초, 바쁘면 0.07초 간격.</li>
+          <li><span class="led on red blink fast"></span><b>빨강 전원 LED 점멸</b> — 서버를 끄는 중이에요.</li>
+          <li><span class="led"></span><b>꺼진 LED</b> — 빈 슬롯. 서버가 없으면 깜빡임도 멈춰요.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="install">
+      <div class="wrap">
+        <h2>설치</h2>
+        <p class="section-sub">macOS 14 Sonoma 이상, Apple Silicon · Intel 모두 지원해요.</p>
+        <ol class="steps">
+          <li><p><a href="https://github.com/silqwer/devservers/releases/latest/download/DevServers.zip"><b>DevServers.zip</b></a>을 내려받아 압축을 풀어요.</p></li>
+          <li><p><code>DevServers.app</code>을 <b>응용 프로그램</b> 폴더로 옮겨요.</p></li>
+          <li><div>
+            <p>처음 한 번은 macOS 보안 확인을 거쳐야 해요. 앱을 실행하면 "확인되지 않은 개발자" 경고가 뜨는데, <b>시스템 설정 → 개인정보 보호 및 보안</b> 맨 아래의 <b>그래도 열기</b>를 누르면 돼요. 터미널이 편하다면:</p>
+            <pre><code>xattr -dr com.apple.quarantine /Applications/DevServers.app</code></pre>
+          </div></li>
+          <li><p>메뉴바에 랙 아이콘이 나타나면 끝. 로그인할 때 자동으로 켜려면 <b>시스템 설정 → 일반 → 로그인 항목</b>에 추가하세요.</p></li>
+        </ol>
+        <div class="note">
+          <b>왜 경고가 뜨나요?</b> 개인 프로젝트라 Apple 개발자 인증(공증)을 받지 않고 ad-hoc 서명만 했기 때문이에요. 다른 프로세스를 조회하고 종료해야 해서 App Sandbox도 쓰지 않아요. 코드는 모두 GitHub에 공개되어 있으니, 직접 빌드해서 쓰셔도 돼요.
+        </div>
+      </div>
+    </section>
+
+    <section id="source">
+      <div class="wrap">
+        <h2>소스에서 빌드</h2>
+        <p class="section-sub">Xcode 또는 Swift 5.10+ 툴체인만 있으면 돼요.</p>
+<pre><code>git clone https://github.com/silqwer/devservers.git
+cd devservers
+./build.sh                       # build/DevServers.app
+open build/DevServers.app
+
+swift run devservers-scan --all  # 터미널에서 스캔 결과만 확인</code></pre>
+
+        <h2 style="margin-top:36px;">어떻게 찾나요?</h2>
+        <p class="section-sub">macOS 기본 명령만 써요. 여러 PID는 한 번에 묶어 조회해서 스캔 한 번에 약 0.3초.</p>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>단계</th><th>명령</th><th>용도</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td><code>lsof -iTCP -sTCP:LISTEN -n -P</code></td><td>LISTEN 중인 포트와 PID</td></tr>
+              <tr><td>2</td><td><code>lsof -a -p &lt;PID…&gt; -d cwd -Fpn</code></td><td>프로세스의 작업 디렉터리</td></tr>
+              <tr><td>3</td><td><code>&lt;cwd&gt;/package.json</code></td><td>프로젝트 이름</td></tr>
+              <tr><td>4</td><td><code>ps -o pid=,pgid=,%cpu=,command=</code></td><td>프로세스 그룹 · CPU · 실행 명령 → 종류</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="engraved" style="font-size:11px;margin-bottom:8px;">DEVSERVERS</div>
+      MIT License · <a href="https://github.com/silqwer/devservers">github.com/silqwer/devservers</a>
+    </div>
+  </footer>
+</body>
+</html>

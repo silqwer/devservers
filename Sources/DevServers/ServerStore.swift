@@ -43,7 +43,7 @@ final class ServerStore: ObservableObject {
         isScanning = true
         let includeAll = showAll
         Task.detached(priority: .utility) {
-            let result = ServerScanner.scan(includeAll: includeAll)
+            let result = Self.applyDemoFilter(ServerScanner.scan(includeAll: includeAll))
             await MainActor.run {
                 self.servers = result
                 self.lastUpdated = Date()
@@ -55,6 +55,20 @@ final class ServerStore: ObservableObject {
                 }
             }
         }
+    }
+
+    /// 데모/녹화용: DEVSERVERS_DEMO_ROOT 하위에서 실행된 서버만 표시 (scripts/demo-servers.sh 참고)
+    nonisolated private static func applyDemoFilter(_ servers: [DevServer]) -> [DevServer] {
+        guard let root = ProcessInfo.processInfo.environment["DEVSERVERS_DEMO_ROOT"], !root.isEmpty else {
+            return servers
+        }
+        // /tmp → /private/tmp 처럼 lsof 가 돌려주는 실제 경로와 맞춘다
+        // (URL.resolvingSymlinksInPath 는 /private 를 다시 떼어내므로 realpath 를 쓴다)
+        let resolved = realpath(root, nil).map { pointer in
+            defer { free(pointer) }
+            return String(cString: pointer)
+        } ?? root
+        return servers.filter { $0.cwd?.hasPrefix(resolved) == true }
     }
 
     func terminate(_ server: DevServer) {

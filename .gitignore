@@ -8,3 +8,6 @@ DerivedData/
 # 도구 설정
 .serena/
 .DS_Store
+
+# 배포 산출물
+dist/

@@ -4,6 +4,12 @@
 
 서버 랙 콘셉트로 만들었다. 메뉴바 아이콘의 LED는 서버 수만큼 켜지고, 서버가 CPU를 많이 쓸수록 빠르게 깜빡인다.
 
+<p align="center">
+  <img src="docs/assets/menubar.gif" alt="서버가 하나씩 켜질 때마다 랙 아이콘의 초록 LED가 늘어나고 빨간 활동 LED가 깜빡이는 메뉴바 아이콘" height="72">
+</p>
+
+**[소개 페이지](https://silqwer.github.io/devservers/) · [다운로드 (DevServers.zip)](https://github.com/silqwer/devservers/releases/latest/download/DevServers.zip)**
+
 ## 기능
 
 - **메뉴바 아이콘**: 3칸짜리 서버 랙
@@ -23,6 +29,15 @@
 
 - macOS 14 이상
 - Xcode 또는 Swift 5.10 이상 툴체인 (`xcode-select -p`로 확인)
+
+## 설치
+
+1. [DevServers.zip](https://github.com/silqwer/devservers/releases/latest/download/DevServers.zip)을 내려받아 압축을 풀고 `DevServers.app`을 `/Applications`로 옮긴다. (Apple Silicon · Intel 유니버설)
+2. 처음 실행 시 "확인되지 않은 개발자" 경고가 뜨면 **시스템 설정 → 개인정보 보호 및 보안 → 그래도 열기**. 또는:
+   ```bash
+   xattr -dr com.apple.quarantine /Applications/DevServers.app
+   ```
+   Apple 공증 없이 ad-hoc 서명만 한 개인 프로젝트라 뜨는 경고다. 직접 빌드해서 써도 된다.
 
 ## 빌드 & 실행
 
@@ -50,6 +65,23 @@ PID     PGID    PORTS          KIND        CPU%   PROJECT                    PAT
         └ next-server (v15.5.24)
 ```
 
+### 배포용 zip 만들기
+
+```bash
+./scripts/package.sh    # 유니버설 빌드 → dist/DevServers.zip
+```
+
+### 데모 / 녹화
+
+실제 프로젝트 이름·경로를 노출하지 않고 시연하려면 데모 서버를 띄우고 앱을 데모 모드로 실행한다.
+
+```bash
+./scripts/demo-servers.sh   # my-blog(:3001) · landing-page(:5173) · @acme/design-system(:6006)
+DEVSERVERS_DEMO_ROOT=/tmp/devservers-demo ./build/DevServers.app/Contents/MacOS/DevServers
+```
+
+`DEVSERVERS_DEMO_ROOT`가 설정되면 그 폴더 아래에서 실행된 서버만 표시한다.
+
 ## 동작 방식
 
 | 단계 | 명령 | 용도 |
@@ -71,7 +103,9 @@ Sources/
 ├─ devservers-scan/   터미널 확인용 CLI
 └─ DevServers/        SwiftUI 메뉴바 앱 (MenuBarExtra .window)
 Resources/Info.plist  LSUIElement 등 번들 설정
-build.sh              .app 번들 생성 + ad-hoc 서명
+build.sh              .app 번들 생성 + ad-hoc 서명 (UNIVERSAL=1 이면 유니버설)
+scripts/              package.sh (배포 zip) · demo-servers.sh (데모 서버)
+docs/                 GitHub Pages 소개 페이지
 ```
 
 ## 라이선스

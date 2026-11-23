@@ -3,8 +3,14 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-swift build -c release --product DevServers
-BIN="$(swift build -c release --show-bin-path)/DevServers"
+# UNIVERSAL=1 이면 Apple Silicon + Intel 유니버설 바이너리로 빌드 (배포용)
+ARCH_FLAGS=()
+if [[ "${UNIVERSAL:-0}" == "1" ]]; then
+    ARCH_FLAGS=(--arch arm64 --arch x86_64)
+fi
+
+swift build -c release --product DevServers "${ARCH_FLAGS[@]}"
+BIN="$(swift build -c release --show-bin-path "${ARCH_FLAGS[@]}")/DevServers"
 
 APP="build/DevServers.app"
 rm -rf "$APP"

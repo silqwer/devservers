@@ -42,7 +42,9 @@
 brew install --cask silqwer/tap/devservers
 ```
 
-설치할 때 quarantine 플래그를 지워 주므로 "확인되지 않은 개발자" 경고 없이 바로 실행된다. 업데이트는 `brew upgrade --cask devservers`.
+설치할 때 quarantine 플래그를 지워 주므로 "확인되지 않은 개발자" 경고 없이 바로 실행된다. 업데이트는 `brew upgrade --cask devservers`. 업데이트 중에 실행 중인 앱이 종료되므로, 끝나면 다시 열어 준다.
+
+로그인 시 자동 실행하려면 `/Applications/DevServers.app`을 **시스템 설정 → 일반 → 로그인 항목**에 추가한다.
 
 ### 직접 내려받기
 

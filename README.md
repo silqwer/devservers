@@ -42,7 +42,9 @@ It's built around a server-rack theme: the menu bar icon lights up one LED per r
 brew install --cask silqwer/tap/devservers
 ```
 
-The cask clears the quarantine flag on install, so there's no "unidentified developer" warning. Update with `brew upgrade --cask devservers`.
+The cask clears the quarantine flag on install, so there's no "unidentified developer" warning. Update with `brew upgrade --cask devservers`. The upgrade quits the running app, so open it again afterwards.
+
+To launch it at login, add `/Applications/DevServers.app` under **System Settings → General → Login Items**.
 
 ### Manual
 

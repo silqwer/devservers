@@ -36,6 +36,16 @@ It's built around a server-rack theme: the menu bar icon lights up one LED per r
 
 ## Install
 
+### Homebrew
+
+```bash
+brew install --cask silqwer/tap/devservers
+```
+
+The cask clears the quarantine flag on install, so there's no "unidentified developer" warning. Update with `brew upgrade --cask devservers`.
+
+### Manual
+
 1. Download [DevServers.zip](https://github.com/silqwer/devservers/releases/latest/download/DevServers.zip), unzip it, and move `DevServers.app` to `/Applications`. (Universal: Apple Silicon and Intel)
 2. If macOS warns about an "unidentified developer" on first launch, go to **System Settings → Privacy & Security → Open Anyway**, or run:
    ```bash

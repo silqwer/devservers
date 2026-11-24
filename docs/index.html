@@ -156,6 +156,7 @@
     .section-sub { color: var(--muted); margin: 0 0 24px; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
     .feature .plate { padding: 18px 20px; height: 100%; }
+    #install h3 { font-size: 16px; margin: 24px 0 8px; }
     .feature h3 { display: flex; align-items: center; gap: 10px; font-size: 16px; margin: 0 0 6px; }
     .feature p { margin: 0; color: var(--muted); font-size: 14.5px; }
 
@@ -317,6 +318,10 @@
       <div class="wrap">
         <h2>설치</h2>
         <p class="section-sub">macOS 14 Sonoma 이상, Apple Silicon · Intel 모두 지원해요.</p>
+        <h3>Homebrew로 설치</h3>
+        <pre><code>brew install --cask silqwer/tap/devservers</code></pre>
+        <p>보안 경고 없이 바로 실행돼요. 업데이트는 <code>brew upgrade --cask devservers</code>.</p>
+        <h3>직접 내려받기</h3>
         <ol class="steps">
           <li><p><a href="https://github.com/silqwer/devservers/releases/latest/download/DevServers.zip"><b>DevServers.zip</b></a>을 내려받아 압축을 풀어요.</p></li>
           <li><p><code>DevServers.app</code>을 <b>응용 프로그램</b> 폴더로 옮겨요.</p></li>

@@ -36,6 +36,16 @@
 
 ## 설치
 
+### Homebrew
+
+```bash
+brew install --cask silqwer/tap/devservers
+```
+
+설치할 때 quarantine 플래그를 지워 주므로 "확인되지 않은 개발자" 경고 없이 바로 실행된다. 업데이트는 `brew upgrade --cask devservers`.
+
+### 직접 내려받기
+
 1. [DevServers.zip](https://github.com/silqwer/devservers/releases/latest/download/DevServers.zip)을 내려받아 압축을 풀고 `DevServers.app`을 `/Applications`로 옮긴다. (Apple Silicon · Intel 유니버설)
 2. 처음 실행 시 "확인되지 않은 개발자" 경고가 뜨면 **시스템 설정 → 개인정보 보호 및 보안 → 그래도 열기**. 또는:
    ```bash

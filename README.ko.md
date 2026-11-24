@@ -85,10 +85,18 @@ PID     PGID    PORTS          KIND        CPU%   PROJECT                    PAT
 
 ```bash
 # 1. Resources/Info.plist 의 CFBundleShortVersionString / CFBundleVersion 올리기
-./scripts/package.sh       # 2. 유니버설 빌드 → dist/DevServers.zip
+./scripts/package.sh       # 2. 유니버설 빌드 → Developer ID 서명 → 공증 → dist/DevServers.zip
 # 3. vX.Y.Z 태그로 GitHub 릴리즈를 만들고 dist/DevServers.zip 업로드
 ./scripts/update-cask.sh   # 4. silqwer/homebrew-tap 의 version·sha256 갱신 (--dry-run 으로 미리보기)
 ```
+
+`package.sh`는 키체인의 첫 번째 **Developer ID Application** 인증서(또는 `SIGN_IDENTITY`)로 서명한 뒤 공증을 받고 결과를 앱에 붙인다(staple). 공증 자격 증명은 처음 한 번만 저장해 두면 된다. 앱 암호는 `notarytool`이 직접 물어본다.
+
+```bash
+xcrun notarytool store-credentials devservers-notary --apple-id <Apple ID> --team-id <TEAMID>
+```
+
+Developer ID 인증서가 없으면 예전처럼 공증 없는 ad-hoc 서명 zip을 만든다.
 
 ### 데모 / 녹화
 

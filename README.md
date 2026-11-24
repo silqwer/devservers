@@ -85,10 +85,18 @@ PID     PGID    PORTS          KIND        CPU%   PROJECT                    PAT
 
 ```bash
 # 1. bump CFBundleShortVersionString / CFBundleVersion in Resources/Info.plist
-./scripts/package.sh       # 2. universal build → dist/DevServers.zip
+./scripts/package.sh       # 2. universal build → sign with Developer ID → notarize → dist/DevServers.zip
 # 3. tag vX.Y.Z and upload dist/DevServers.zip to a GitHub release
 ./scripts/update-cask.sh   # 4. update version and sha256 in silqwer/homebrew-tap (--dry-run to preview)
 ```
+
+`package.sh` signs with the first **Developer ID Application** certificate in your keychain (or `SIGN_IDENTITY`), then notarizes and staples the app. Store the notary credentials once — `notarytool` asks for an app-specific password:
+
+```bash
+xcrun notarytool store-credentials devservers-notary --apple-id <Apple ID> --team-id <TEAMID>
+```
+
+Without a Developer ID certificate it falls back to an ad-hoc signed, un-notarized zip.
 
 ### Demo / screen recording
 

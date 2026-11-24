@@ -79,10 +79,13 @@ PID     PGID    PORTS          KIND        CPU%   PROJECT                    PAT
         └ next-server (v15.5.24)
 ```
 
-### 배포용 zip 만들기
+### 릴리즈
 
 ```bash
-./scripts/package.sh    # 유니버설 빌드 → dist/DevServers.zip
+# 1. Resources/Info.plist 의 CFBundleShortVersionString / CFBundleVersion 올리기
+./scripts/package.sh       # 2. 유니버설 빌드 → dist/DevServers.zip
+# 3. vX.Y.Z 태그로 GitHub 릴리즈를 만들고 dist/DevServers.zip 업로드
+./scripts/update-cask.sh   # 4. silqwer/homebrew-tap 의 version·sha256 갱신 (--dry-run 으로 미리보기)
 ```
 
 ### 데모 / 녹화
@@ -118,7 +121,7 @@ Sources/
 └─ DevServers/        SwiftUI 메뉴바 앱 (MenuBarExtra .window)
 Resources/Info.plist  LSUIElement 등 번들 설정
 build.sh              .app 번들 생성 + ad-hoc 서명 (UNIVERSAL=1 이면 유니버설)
-scripts/              package.sh (배포 zip) · demo-servers.sh (데모 서버)
+scripts/              package.sh (배포 zip) · update-cask.sh (Homebrew cask) · demo-servers.sh (데모 서버)
 docs/                 GitHub Pages 소개 페이지
 ```
 

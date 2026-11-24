@@ -79,10 +79,13 @@ PID     PGID    PORTS          KIND        CPU%   PROJECT                    PAT
         └ next-server (v15.5.24)
 ```
 
-### Build the release zip
+### Release
 
 ```bash
-./scripts/package.sh    # universal build → dist/DevServers.zip
+# 1. bump CFBundleShortVersionString / CFBundleVersion in Resources/Info.plist
+./scripts/package.sh       # 2. universal build → dist/DevServers.zip
+# 3. tag vX.Y.Z and upload dist/DevServers.zip to a GitHub release
+./scripts/update-cask.sh   # 4. update version and sha256 in silqwer/homebrew-tap (--dry-run to preview)
 ```
 
 ### Demo / screen recording
@@ -118,7 +121,7 @@ Sources/
 └─ DevServers/        SwiftUI menu bar app (MenuBarExtra .window)
 Resources/Info.plist  bundle settings such as LSUIElement
 build.sh              builds the .app bundle + ad-hoc signing (UNIVERSAL=1 for a universal binary)
-scripts/              package.sh (release zip) · demo-servers.sh (demo servers)
+scripts/              package.sh (release zip) · update-cask.sh (Homebrew cask) · demo-servers.sh (demo servers)
 docs/                 GitHub Pages website
 ```
 

@@ -42,18 +42,16 @@
 brew install --cask silqwer/tap/devservers
 ```
 
-설치할 때 quarantine 플래그를 지워 주므로 "확인되지 않은 개발자" 경고 없이 바로 실행된다. 업데이트는 `brew upgrade --cask devservers`. 업데이트 중에 실행 중인 앱이 종료되므로, 끝나면 다시 열어 준다.
+업데이트는 `brew upgrade --cask devservers`. 업데이트 중에 실행 중인 앱이 종료되므로, 끝나면 다시 열어 준다.
 
 로그인 시 자동 실행하려면 `/Applications/DevServers.app`을 **시스템 설정 → 일반 → 로그인 항목**에 추가한다.
 
 ### 직접 내려받기
 
 1. [DevServers.zip](https://github.com/silqwer/devservers/releases/latest/download/DevServers.zip)을 내려받아 압축을 풀고 `DevServers.app`을 `/Applications`로 옮긴다. (Apple Silicon · Intel 유니버설)
-2. 처음 실행 시 "확인되지 않은 개발자" 경고가 뜨면 **시스템 설정 → 개인정보 보호 및 보안 → 그래도 열기**. 또는:
-   ```bash
-   xattr -dr com.apple.quarantine /Applications/DevServers.app
-   ```
-   Apple 공증 없이 ad-hoc 서명만 한 개인 프로젝트라 뜨는 경고다. 직접 빌드해서 써도 된다.
+2. 실행한다. 처음 한 번은 "인터넷에서 다운로드한 앱"이라는 확인 창이 뜨는데 **열기**를 누르면 된다.
+
+배포본은 Developer ID로 서명하고 Apple 공증을 받았기 때문에 "확인되지 않은 개발자" 경고가 뜨지 않는다.
 
 ## 빌드 & 실행
 
@@ -130,7 +128,7 @@ Sources/
 ├─ devservers-scan/   터미널 확인용 CLI
 └─ DevServers/        SwiftUI 메뉴바 앱 (MenuBarExtra .window)
 Resources/Info.plist  LSUIElement 등 번들 설정
-build.sh              .app 번들 생성 + ad-hoc 서명 (UNIVERSAL=1 이면 유니버설)
+build.sh              .app 번들 생성 + 서명 (SIGN_IDENTITY 가 있으면 Developer ID, 없으면 ad-hoc · UNIVERSAL=1 이면 유니버설)
 scripts/              package.sh (배포 zip) · update-cask.sh (Homebrew cask) · demo-servers.sh (데모 서버)
 docs/                 GitHub Pages 소개 페이지
 ```

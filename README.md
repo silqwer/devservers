@@ -42,18 +42,16 @@ It's built around a server-rack theme: the menu bar icon lights up one LED per r
 brew install --cask silqwer/tap/devservers
 ```
 
-The cask clears the quarantine flag on install, so there's no "unidentified developer" warning. Update with `brew upgrade --cask devservers`. The upgrade quits the running app, so open it again afterwards.
+Update with `brew upgrade --cask devservers`. The upgrade quits the running app, so open it again afterwards.
 
 To launch it at login, add `/Applications/DevServers.app` under **System Settings → General → Login Items**.
 
 ### Manual
 
 1. Download [DevServers.zip](https://github.com/silqwer/devservers/releases/latest/download/DevServers.zip), unzip it, and move `DevServers.app` to `/Applications`. (Universal: Apple Silicon and Intel)
-2. If macOS warns about an "unidentified developer" on first launch, go to **System Settings → Privacy & Security → Open Anyway**, or run:
-   ```bash
-   xattr -dr com.apple.quarantine /Applications/DevServers.app
-   ```
-   This is a personal project with an ad-hoc signature and no Apple notarization, which is why the warning appears. You can always build it yourself instead.
+2. Open it. On first launch macOS asks to confirm an app downloaded from the internet — click **Open**.
+
+Releases are signed with a Developer ID and notarized by Apple, so there's no "unidentified developer" warning.
 
 ## Build & run
 
@@ -130,7 +128,7 @@ Sources/
 ├─ devservers-scan/   CLI for checking scan results in the terminal
 └─ DevServers/        SwiftUI menu bar app (MenuBarExtra .window)
 Resources/Info.plist  bundle settings such as LSUIElement
-build.sh              builds the .app bundle + ad-hoc signing (UNIVERSAL=1 for a universal binary)
+build.sh              builds the .app bundle + signing (Developer ID with SIGN_IDENTITY, otherwise ad-hoc; UNIVERSAL=1 for a universal binary)
 scripts/              package.sh (release zip) · update-cask.sh (Homebrew cask) · demo-servers.sh (demo servers)
 docs/                 GitHub Pages website
 ```

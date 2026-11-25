@@ -411,14 +411,11 @@
         <ol class="steps">
           <li><p><a href="https://github.com/silqwer/devservers/releases/latest/download/DevServers.zip"><b>DevServers.zip</b></a>을 내려받아 압축을 풀어요.</p></li>
           <li><p><code>DevServers.app</code>을 <b>응용 프로그램</b> 폴더로 옮겨요.</p></li>
-          <li><div>
-            <p>처음 한 번은 macOS 보안 확인을 거쳐야 해요. 앱을 실행하면 "확인되지 않은 개발자" 경고가 뜨는데, <b>시스템 설정 → 개인정보 보호 및 보안</b> 맨 아래의 <b>그래도 열기</b>를 누르면 돼요. 터미널이 편하다면:</p>
-            <pre><code>xattr -dr com.apple.quarantine /Applications/DevServers.app</code></pre>
-          </div></li>
+          <li><p>앱을 실행해요. 처음 한 번은 "인터넷에서 다운로드한 앱"이라는 확인 창이 뜨는데, <b>열기</b>를 누르면 돼요.</p></li>
           <li><p>메뉴바에 랙 아이콘이 나타나면 끝. 로그인할 때 자동으로 켜려면 <b>시스템 설정 → 일반 → 로그인 항목</b>에 추가하세요.</p></li>
         </ol>
         <div class="note">
-          <b>왜 경고가 뜨나요?</b> 개인 프로젝트라 Apple 개발자 인증(공증)을 받지 않고 ad-hoc 서명만 했기 때문이에요. 다른 프로세스를 조회하고 종료해야 해서 App Sandbox도 쓰지 않아요. 코드는 모두 GitHub에 공개되어 있으니, 직접 빌드해서 쓰셔도 돼요.
+          <b>안심하고 쓰셔도 돼요.</b> Developer ID로 서명하고 Apple 공증을 받아서 "확인되지 않은 개발자" 경고가 뜨지 않아요. 다른 프로세스를 조회하고 종료해야 해서 App Sandbox는 쓰지 않고, 그래서 Mac App Store 대신 직접 배포해요. 코드는 모두 GitHub에 공개되어 있어요.
         </div>
       </div>
     </section>

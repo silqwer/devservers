@@ -76,7 +76,7 @@ swift run devservers-scan --all    # LISTEN 중인 모든 프로세스
 
 ```
 PID     PGID    PORTS          KIND        CPU%   PROJECT                    PATH
-38272   38236   3000           Next.js     0.0    @cv-front/typist           ~/…/apps/typist
+38272   38236   3001           Next.js     0.0    my-blog                    ~/…/my-blog
         └ next-server (v15.5.24)
 ```
 

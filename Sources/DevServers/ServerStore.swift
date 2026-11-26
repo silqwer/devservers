@@ -76,8 +76,9 @@ final class ServerStore: ObservableObject {
         terminating.insert(server.pid)
         let pid = server.pid
         let pgid = server.pgid
+        let startTime = server.startTime
         Task.detached(priority: .userInitiated) {
-            ServerScanner.terminate(pid: pid, pgid: pgid)
+            ServerScanner.terminate(pid: pid, pgid: pgid, startTime: startTime)
             await MainActor.run {
                 self.terminating.remove(pid)
                 self.servers.removeAll { $0.pid == pid && !ServerScanner.isAlive(pid) }
@@ -139,6 +140,16 @@ final class ServerStore: ObservableObject {
 
     func revealInFinder(_ server: DevServer) {
         guard let cwd = server.cwd else { return }
-        NSWorkspace.shared.open(URL(fileURLWithPath: cwd, isDirectory: true))
+        let url = URL(fileURLWithPath: cwd, isDirectory: true)
+        var isDirectory: ObjCBool = false
+        // open(_:) 은 .app 같은 번들 폴더를 받으면 그 앱을 실행해 버린다.
+        // 일반 폴더만 그 폴더 창으로 열고, 번들이거나 폴더가 아니면 Finder 에서 선택해 보여주기만 한다.
+        if FileManager.default.fileExists(atPath: cwd, isDirectory: &isDirectory), isDirectory.boolValue,
+           !NSWorkspace.shared.isFilePackage(atPath: cwd)
+        {
+            NSWorkspace.shared.open(url)
+        } else {
+            NSWorkspace.shared.activateFileViewerSelecting([url])
+        }
     }
 }

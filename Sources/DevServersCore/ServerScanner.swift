@@ -16,6 +16,8 @@ public struct DevServer: Identifiable, Hashable, Sendable {
     public let isNode: Bool
     /// `ps -o %cpu=` (최근 사용률의 감쇠 평균, 멀티코어면 100 초과 가능)
     public let cpu: Double
+    /// 스캔 시점의 프로세스 시작 시각. 종료 직전에 같은 프로세스인지(PID 재사용이 아닌지) 확인하는 데 쓴다.
+    public let startTime: ServerScanner.ProcessStartTime?
 
     public var id: Int32 { pid }
 
@@ -58,7 +60,8 @@ public enum ServerScanner {
                 projectName: projectName(cwd: cwd, fallback: listener.name),
                 kind: detectKind(command: command, isNode: isNode, processName: listener.name),
                 isNode: isNode,
-                cpu: info?.cpu ?? 0
+                cpu: info?.cpu ?? 0,
+                startTime: processIdentity(pid)?.startTime
             )
         }
 
@@ -70,31 +73,72 @@ public enum ServerScanner {
     // MARK: - Terminate
 
     /// 프로세스 그룹에 SIGTERM → 3초 내 종료되지 않으면 SIGKILL. 블로킹 호출이므로 백그라운드에서 사용.
-    /// - Returns: 최종적으로 프로세스가 사라졌는지 여부
+    ///
+    /// 스캔과 종료 사이에 서버가 꺼지고 같은 PID 를 다른 프로세스가 받았을 수 있으므로,
+    /// `startTime` 을 주면 신호를 보내기 직전마다 시작 시각을 다시 확인하고 다르면 아무것도 죽이지 않는다.
+    /// - Returns: 최종적으로 원래 프로세스가 사라졌는지 여부
     @discardableResult
-    public static func terminate(pid: Int32, pgid: Int32, timeout: TimeInterval = 3) -> Bool {
-        // 자기 자신의 그룹이거나 launchd/커널 그룹이면 그룹 전체를 죽이지 않고 해당 PID 만 대상으로 한다.
-        let useGroup = pgid > 1 && pgid != getpgrp()
-        let target: pid_t = useGroup ? -pgid : pid
+    public static func terminate(
+        pid: Int32, pgid: Int32, startTime: ProcessStartTime? = nil, timeout: TimeInterval = 3
+    ) -> Bool {
+        /// 원래 프로세스가 아직 살아 있으면 지금 신호를 보낼 대상(그룹 또는 PID), 사라졌으면 nil
+        func currentTarget() -> pid_t? {
+            guard let identity = processIdentity(pid) else { return nil }
+            if let startTime, identity.startTime != startTime { return nil }
+            // 자기 자신의 그룹이거나 launchd/커널 그룹이면 그룹 전체를 죽이지 않고 해당 PID 만 대상으로 한다.
+            // 스캔 이후 그룹이 바뀌었으면 엉뚱한 그룹을 건드리지 않도록 PID 만 대상으로 한다.
+            let useGroup = pgid > 1 && pgid != getpgrp() && identity.pgid == pgid
+            return useGroup ? -pgid : pid
+        }
 
-        if kill(target, SIGTERM) != 0, useGroup {
+        guard let target = currentTarget() else { return true }
+        if kill(target, SIGTERM) != 0, target != pid {
             kill(pid, SIGTERM)
         }
 
         let deadline = Date().addingTimeInterval(timeout)
         while Date() < deadline {
-            if !isAlive(pid) { return true }
+            if currentTarget() == nil { return true }
             Thread.sleep(forTimeInterval: 0.2)
         }
 
+        guard let target = currentTarget() else { return true }
         kill(target, SIGKILL)
-        kill(pid, SIGKILL)
+        if target != pid { kill(pid, SIGKILL) }
         Thread.sleep(forTimeInterval: 0.3)
-        return !isAlive(pid)
+        return currentTarget() == nil
     }
 
     public static func isAlive(_ pid: Int32) -> Bool {
         kill(pid, 0) == 0 || errno == EPERM
+    }
+
+    // MARK: - Process identity
+
+    /// 커널이 기록한 프로세스 시작 시각 (초 + 마이크로초). PID 와 함께 보면 프로세스를 유일하게 식별한다.
+    public struct ProcessStartTime: Hashable, Sendable {
+        public let seconds: Int
+        public let microseconds: Int32
+    }
+
+    struct ProcessIdentity {
+        let startTime: ProcessStartTime
+        let pgid: Int32
+    }
+
+    /// sysctl(KERN_PROC_PID) 로 시작 시각과 프로세스 그룹을 읽는다. 프로세스가 없으면 nil.
+    static func processIdentity(_ pid: Int32) -> ProcessIdentity? {
+        var info = kinfo_proc()
+        var size = MemoryLayout<kinfo_proc>.stride
+        var mib: [Int32] = [CTL_KERN, KERN_PROC, KERN_PROC_PID, pid]
+        guard sysctl(&mib, u_int(mib.count), &info, &size, nil, 0) == 0, size > 0,
+              info.kp_proc.p_pid == pid
+        else { return nil }
+        let start = info.kp_proc.p_un.__p_starttime
+        return ProcessIdentity(
+            startTime: ProcessStartTime(seconds: start.tv_sec, microseconds: start.tv_usec),
+            pgid: info.kp_eproc.e_pgid
+        )
     }
 
     // MARK: - lsof: LISTEN ports

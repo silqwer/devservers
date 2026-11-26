@@ -32,6 +32,6 @@ if let i = CommandLine.arguments.firstIndex(of: "--kill"), i + 1 < CommandLine.a
    let target = ServerScanner.scan(includeAll: true).first(where: { $0.pid == pid })
 {
     let t = Date()
-    let ok = ServerScanner.terminate(pid: target.pid, pgid: target.pgid)
+    let ok = ServerScanner.terminate(pid: target.pid, pgid: target.pgid, startTime: target.startTime)
     print("terminate \(pid) (pgid \(target.pgid)) → \(ok ? "stopped" : "still alive") in \(Int(Date().timeIntervalSince(t) * 1000))ms")
 }

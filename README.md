@@ -10,7 +10,7 @@ It's built around a server-rack theme: the menu bar icon lights up one LED per r
   <img src="docs/assets/menubar.gif" alt="Menu bar rack icon: a green LED lights up for each server that starts, while red activity LEDs blink" height="72">
 </p>
 
-**[Website](https://silqwer.github.io/devservers/) · [Download (DevServers.zip)](https://github.com/silqwer/devservers/releases/latest/download/DevServers.zip)**
+**[Website](https://silqwer.github.io/devservers/en/) · [Download (DevServers.zip)](https://github.com/silqwer/devservers/releases/latest/download/DevServers.zip)**
 
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-FFDD00?logo=buymeacoffee&logoColor=000)](https://buymeacoffee.com/silqwers)
 

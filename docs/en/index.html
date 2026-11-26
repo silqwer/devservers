@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DevServers — local dev servers in your menu bar</title>
+  <meta name="description" content="next dev · vite · storybook… See which project is running on which port right from the macOS menu bar, and stop it in one click. Free and open source.">
+  <link rel="canonical" href="https://silqwer.github.io/devservers/en/">
+  <link rel="alternate" hreflang="ko" href="https://silqwer.github.io/devservers/">
+  <link rel="alternate" hreflang="en" href="https://silqwer.github.io/devservers/en/">
+  <link rel="alternate" hreflang="x-default" href="https://silqwer.github.io/devservers/en/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DevServers">
+  <meta property="og:url" content="https://silqwer.github.io/devservers/en/">
+  <meta property="og:title" content="DevServers — every local dev server, right in your menu bar">
+  <meta property="og:description" content="next dev · vite · storybook… See which project is running on which port right from the macOS menu bar, and stop it in one click. Free and open source.">
+  <meta property="og:image" content="https://silqwer.github.io/devservers/assets/og-image-en.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The DevServers panel: running dev servers stacked like rack units, each with its project name and port">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="ko_KR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DevServers — every local dev server, right in your menu bar">
+  <meta name="twitter:description" content="next dev · vite · storybook… See which project is running on which port right from the macOS menu bar, and stop it in one click. Free and open source.">
+  <meta name="twitter:image" content="https://silqwer.github.io/devservers/assets/og-image-en.png">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a class="brand engraved" href="#">
+        <svg width="20" height="18" viewBox="0 0 18 16" aria-hidden="true">
+          <g fill="none" stroke="#cfd1d6" stroke-width="1.1">
+            <rect x="2" y="1.3" width="14" height="3.6" rx="1.2"/><rect x="2" y="6.2" width="14" height="3.6" rx="1.2"/><rect x="2" y="11.1" width="14" height="3.6" rx="1.2"/>
+            <path d="M10 3.1h4M10 8h4M10 12.9h4" stroke-linecap="round"/>
+          </g>
+          <g><circle cx="4.4" cy="3.1" r="1.2" fill="#3deb7a"/><circle cx="4.4" cy="8" r="1.2" fill="#3deb7a"/><circle cx="7.2" cy="8" r="1.2" fill="#ff5450"/></g>
+        </svg>
+        DEVSERVERS
+      </a>
+      <div class="top-right">
+        <nav>
+          <a href="#features">Features</a>
+          <a href="#install">Install</a>
+          <a href="#source">Build</a>
+          <a href="https://github.com/silqwer/devservers">GitHub</a>
+        </nav>
+        <div class="lang" aria-label="Language">
+          <span aria-current="page">EN</span>
+          <a href="../" hreflang="ko" lang="ko">KO</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero wrap">
+      <div class="badge"><span class="led on green"></span> macOS 14+ · Free · Open source (MIT)</div>
+      <h1>Every dev server you left running,<br><span class="accent">right in your menu bar</span></h1>
+      <p class="lead">
+        <code>next dev</code>, <code>vite</code>, <code>storybook</code>… See which project's server is running on which port, and stop it in one click.
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/silqwer/devservers/releases/latest/download/DevServers.zip">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg>
+          Download <span class="sub">DevServers.zip</span>
+        </a>
+        <a class="btn" href="https://github.com/silqwer/devservers">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+          View on GitHub
+        </a>
+        <a class="btn coffee" href="https://buymeacoffee.com/silqwers">
+          <span aria-hidden="true">☕</span>
+          Buy me a coffee
+        </a>
+      </div>
+      <div class="meta">Universal: Apple Silicon · Intel · about 400 KB</div>
+
+      <div class="showcase">
+        <div class="menubar" aria-label="Menu bar preview">
+          <span class="fake"></span><span class="fake"></span>
+          <img src="../assets/menubar.gif" alt="Menu bar rack icon: a green LED lights up for each server that starts, while red activity LEDs blink">
+          <span class="fake"></span>
+        </div>
+        <div class="caption">The rack lights up as each server starts, and the red LEDs blink faster the more CPU your servers use.</div>
+      </div>
+    </div>
+
+    <section id="features">
+      <div class="wrap">
+        <h2>One server = one rack unit</h2>
+        <p class="section-sub">Click the menu bar icon and your running servers stack up like 1U rack units.</p>
+
+        <div class="panel" aria-label="DevServers panel preview">
+          <div class="panel-bar">
+            <span class="engraved panel-title">DEVSERVERS</span>
+            <span class="lcd">02U</span>
+            <span class="spacer"></span>
+            <span class="hw" title="Refresh"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66L20 8.5"/><path d="M20 3.5v5h-5"/></svg></span>
+            <span class="hw text danger">전체 종료</span>
+          </div>
+          <div class="panel-list">
+            <div class="unit">
+              <div class="ear"><span class="screw"></span><span class="screw"></span></div>
+              <div class="plate srv">
+                <div class="leds"><span class="led on green"></span><span class="led on amber blink"></span></div>
+                <div class="srv-info">
+                  <div class="srv-name"><b>my-blog</b><span class="kind" style="--k:#e6e6e6;">NEXT.JS</span></div>
+                  <div class="srv-meta"><span class="lcd">:3001</span><span class="pid">PID 41230</span></div>
+                </div>
+                <div class="vents"><i></i><i></i><i></i><i></i></div>
+                <div class="hw-group">
+                  <span class="hw" title="Open in browser"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg></span>
+                  <span class="hw" title="Reveal in Finder"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+                  <span class="hw power" title="Stop server"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v8"/><path d="M6.4 6.4a8 8 0 1 0 11.2 0"/></svg></span>
+                </div>
+              </div>
+              <div class="ear"><span class="screw"></span><span class="screw"></span></div>
+            </div>
+            <div class="unit">
+              <div class="ear"><span class="screw"></span><span class="screw"></span></div>
+              <div class="plate srv">
+                <div class="leds"><span class="led on green"></span><span class="led on amber blink fast"></span></div>
+                <div class="srv-info">
+                  <div class="srv-name"><b>landing-page</b><span class="kind" style="--k:#b88cff;">VITE</span></div>
+                  <div class="srv-meta"><span class="lcd">:5173</span><span class="pid">PID 41388</span></div>
+                </div>
+                <div class="vents"><i></i><i></i><i></i><i></i></div>
+                <div class="hw-group">
+                  <span class="hw" title="Open in browser"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg></span>
+                  <span class="hw" title="Reveal in Finder"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+                  <span class="hw power" title="Stop server"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v8"/><path d="M6.4 6.4a8 8 0 1 0 11.2 0"/></svg></span>
+                </div>
+              </div>
+              <div class="ear"><span class="screw"></span><span class="screw"></span></div>
+            </div>
+          </div>
+          <div class="panel-bar">
+            <span class="rocker"><span class="rocker-knob"></span></span>
+            <span class="led"></span>
+            <span class="engraved small">ALL PROCS</span>
+            <span class="spacer"></span>
+            <span class="hw text"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4 3 15h18z"/><rect x="3" y="17.5" width="18" height="3" rx="1"/></svg><span class="engraved small">QUIT</span></span>
+          </div>
+        </div>
+        <p class="panel-caption">🧭 Open in browser · 📁 Reveal in Finder · ⏻ Stop server — the power button turns red when you hover over it.</p>
+
+        <div class="grid" style="margin-top:16px;">
+          <div class="unit feature"><div class="ear"><span class="screw"></span><span class="screw"></span></div><div class="plate">
+            <h3><span class="led on green"></span>Know which project it is</h3>
+            <p>Shows the name from <code>package.json</code> (or the folder name) along with the kind: Next.js, Vite, Storybook and more.</p>
+          </div><div class="ear"><span class="screw"></span><span class="screw"></span></div></div>
+
+          <div class="unit feature"><div class="ear"><span class="screw"></span><span class="screw"></span></div><div class="plate">
+            <h3><span class="lcd" style="font-size:12px;">:5173</span>Click the port to open it</h3>
+            <p>Click the port display to open <code>localhost:&lt;port&gt;</code>, or reveal the project folder in Finder.</p>
+          </div><div class="ear"><span class="screw"></span><span class="screw"></span></div></div>
+
+          <div class="unit feature"><div class="ear"><span class="screw"></span><span class="screw"></span></div><div class="plate">
+            <h3><span class="led on red"></span>Stops cleanly</h3>
+            <p>The ⏻ button sends SIGTERM to the process group, then SIGKILL if it's still alive after 3 seconds — so parent processes like <code>pnpm dev</code> go away too.</p>
+          </div><div class="ear"><span class="screw"></span><span class="screw"></span></div></div>
+
+          <div class="unit feature"><div class="ear"><span class="screw"></span><span class="screw"></span></div><div class="plate">
+            <h3><span class="led on green blink"></span>Always up to date</h3>
+            <p>Rescans in the background when you open the panel and every 3 seconds. No Dock icon — it stays quietly in the menu bar.</p>
+          </div><div class="ear"><span class="screw"></span><span class="screw"></span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>Reading the LEDs</h2>
+        <p class="section-sub">The menu bar icon and the panel follow the same rules.</p>
+        <ul class="legend">
+          <li><span class="led on green"></span><b>Green power LED</b> — the server is running. In the menu bar, one lights up per server from the top (up to 3).</li>
+          <li><span class="led on red blink"></span><span class="led on amber blink"></span><b>Activity LED</b> — blinks in proportion to CPU usage (red in the menu bar, amber in the panel). Every 0.9 s when idle, every 0.07 s when busy.</li>
+          <li><span class="led on red blink fast"></span><b>Blinking red power LED</b> — the server is stopping.</li>
+          <li><span class="led"></span><b>Unlit LED</b> — an empty slot. With no servers, the blinking stops too.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="install">
+      <div class="wrap">
+        <h2>Install</h2>
+        <p class="section-sub">macOS 14 Sonoma or later, on Apple Silicon and Intel.</p>
+        <h3>With Homebrew</h3>
+        <pre><code>brew install --cask silqwer/tap/devservers</code></pre>
+        <p>It opens right away with no security warning. Update with <code>brew upgrade --cask devservers</code> — the upgrade quits the app, so open it again afterwards. To launch it at login, add it under <b>System Settings → General → Login Items</b>.</p>
+        <h3>Manual download</h3>
+        <ol class="steps">
+          <li><p>Download <a href="https://github.com/silqwer/devservers/releases/latest/download/DevServers.zip"><b>DevServers.zip</b></a> and unzip it.</p></li>
+          <li><p>Move <code>DevServers.app</code> to your <b>Applications</b> folder.</p></li>
+          <li><p>Open it. On first launch macOS asks you to confirm an app downloaded from the internet — click <b>Open</b>.</p></li>
+          <li><p>That's it once the rack icon appears in your menu bar. To launch it at login, add it under <b>System Settings → General → Login Items</b>.</p></li>
+        </ol>
+        <div class="note">
+          <b>Safe to use.</b> It's signed with a Developer ID and notarized by Apple, so there's no "unidentified developer" warning. Because it has to inspect and stop other processes, it doesn't use App Sandbox — which is why it's distributed directly instead of through the Mac App Store. All the code is public on GitHub.
+        </div>
+      </div>
+    </section>
+
+    <section id="source">
+      <div class="wrap">
+        <h2>Build from source</h2>
+        <p class="section-sub">All you need is Xcode or a Swift 5.10+ toolchain.</p>
+<pre><code>git clone https://github.com/silqwer/devservers.git
+cd devservers
+./build.sh                       # build/DevServers.app
+open build/DevServers.app
+
+swift run devservers-scan --all  # print scan results in the terminal</code></pre>
+
+        <h2 style="margin-top:36px;">How does it find servers?</h2>
+        <p class="section-sub">Only built-in macOS commands. PIDs are batched into a single query, so one scan takes about 0.3 seconds.</p>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Step</th><th>Command</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td><code>lsof -iTCP -sTCP:LISTEN -n -P</code></td><td>Listening ports and PIDs</td></tr>
+              <tr><td>2</td><td><code>lsof -a -p &lt;PID…&gt; -d cwd -Fpn</code></td><td>Each process's working directory</td></tr>
+              <tr><td>3</td><td><code>&lt;cwd&gt;/package.json</code></td><td>Project name</td></tr>
+              <tr><td>4</td><td><code>ps -o pid=,pgid=,%cpu=,command=</code></td><td>Process group · CPU · command line → kind</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="engraved" style="font-size:11px;margin-bottom:8px;">DEVSERVERS</div>
+      MIT License · <a href="https://github.com/silqwer/devservers">github.com/silqwer/devservers</a> · <a href="https://buymeacoffee.com/silqwers">☕ Buy me a coffee</a>
+    </div>
+  </footer>
+</body>
+</html>

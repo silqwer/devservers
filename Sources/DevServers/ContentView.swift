@@ -48,12 +48,12 @@ struct ContentView: View {
                 Image(systemName: "arrow.clockwise")
             }
             .buttonStyle(HardwareButtonStyle())
-            .help("새로고침")
+            .help("Refresh")
 
-            Button("전체 종료") { isConfirmingKillAll = true }
+            Button("Stop all") { isConfirmingKillAll = true }
                 .buttonStyle(HardwareButtonStyle(tint: Rack.red))
                 .disabled(store.servers.isEmpty)
-                .help("모든 서버 종료")
+                .help("Stop every server")
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
@@ -66,13 +66,13 @@ struct ContentView: View {
             HazardStripe().frame(height: 4)
             HStack(spacing: 8) {
                 LED(color: Rack.amber, isOn: true)
-                Text("\(store.servers.count)개 서버를 모두 종료할까요?")
+                Text("Stop all servers (\(store.servers.count))?")
                     .font(.system(size: 12, weight: .medium))
                     .foregroundStyle(Rack.amber)
                 Spacer()
-                Button("취소") { isConfirmingKillAll = false }
+                Button("Cancel") { isConfirmingKillAll = false }
                     .buttonStyle(HardwareButtonStyle())
-                Button("모두 종료") {
+                Button("Stop all servers") {
                     store.terminateAll()
                     isConfirmingKillAll = false
                 }
@@ -95,7 +95,7 @@ struct ContentView: View {
             RackUnit {
                 HStack(spacing: 10) {
                     VentSlots(count: 5)
-                    Text(store.showAll ? "EMPTY SLOT · LISTEN 중인 프로세스 없음" : "EMPTY SLOT · 실행 중인 node 서버 없음")
+                    (store.showAll ? Text("EMPTY SLOT · No listening processes") : Text("EMPTY SLOT · No node servers running"))
                         .font(.system(size: 11, weight: .medium, design: .monospaced))
                         .foregroundStyle(Rack.engraved)
                         .lineLimit(1)
@@ -141,7 +141,7 @@ struct ContentView: View {
         HStack {
             Toggle("ALL PROCS", isOn: $store.showAll)
                 .toggleStyle(RockerToggleStyle())
-                .help("node 가 아닌 프로세스까지 모두 보기")
+                .help("Also show processes that aren't node")
             Spacer()
             // 서버 전원(초록 ⏻)과 헷갈리지 않도록 앱 종료는 회색 ⏏ + QUIT 각인
             Button {
@@ -158,7 +158,7 @@ struct ContentView: View {
             }
             .buttonStyle(HardwareButtonStyle())
             .keyboardShortcut("q")
-            .help("DevServers 앱 종료 (⌘Q) · 실행 중인 서버는 그대로 유지돼요")
+            .help("Quit DevServers (⌘Q) · running servers keep running")
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
@@ -202,7 +202,7 @@ struct ServerRow: View {
                                 LCD(text: ":\(String(port))")
                             }
                             .buttonStyle(.plain)
-                            .help("http://localhost:\(String(port)) 열기")
+                            .help("Open http://localhost:\(String(port))")
                         }
                         Text("PID \(String(server.pid))")
                             .font(.system(size: 9.5, weight: .medium, design: .monospaced))
@@ -230,14 +230,14 @@ struct ServerRow: View {
             } label: { Image(systemName: "safari") }
                 .buttonStyle(HardwareButtonStyle(isSquare: true))
                 .disabled(server.ports.isEmpty)
-                .help("브라우저로 열기")
+                .help("Open in browser")
 
             Button { store.revealInFinder(server) } label: { Image(systemName: "folder") }
                 .buttonStyle(HardwareButtonStyle(isSquare: true))
                 .disabled(server.cwd == nil)
-                .help("Finder에서 열기\n\(server.displayPath)")
+                .help("Reveal in Finder\n\(server.displayPath)")
 
-            PowerButton(help: "서버 종료") { store.terminate(server) }
+            PowerButton(help: "Stop server") { store.terminate(server) }
                 .disabled(isTerminating)
         }
     }

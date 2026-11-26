@@ -28,6 +28,7 @@ It's built around a server-rack theme: the menu bar icon lights up one LED per r
 - **ALL PROCS switch**: shows only node processes by default; turn it on to list every process that's listening on a TCP port
 - Refreshes when the panel opens and every 3 seconds (scans run in the background)
 - No Dock icon (`LSUIElement`); LED blinking stops when "Reduce motion" is on in System Settings
+- English and Korean UI, following your system language
 
 ## Requirements
 

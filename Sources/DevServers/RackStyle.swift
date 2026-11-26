@@ -283,7 +283,7 @@ struct RockerToggleStyle: ToggleStyle {
 
 /// 전원 버튼: 켜져 있는 동안 초록으로 빛나고, 마우스를 올리면 "누르면 꺼짐" 을 뜻하는 빨강으로 바뀐다.
 struct PowerButton: View {
-    let help: String
+    let help: LocalizedStringKey
     let action: () -> Void
     @State private var isHovering = false
     @Environment(\.isEnabled) private var isEnabled

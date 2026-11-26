@@ -1,0 +1,23 @@
+/* 패널 상단 */
+"Refresh" = "새로고침";
+"Stop all" = "전체 종료";
+"Stop every server" = "모든 서버 종료";
+
+/* 전체 종료 확인 띠 */
+"Stop all servers (%lld)?" = "%lld개 서버를 모두 종료할까요?";
+"Cancel" = "취소";
+"Stop all servers" = "모두 종료";
+
+/* 빈 슬롯 */
+"EMPTY SLOT · No listening processes" = "EMPTY SLOT · LISTEN 중인 프로세스 없음";
+"EMPTY SLOT · No node servers running" = "EMPTY SLOT · 실행 중인 node 서버 없음";
+
+/* 하단 */
+"Also show processes that aren't node" = "node 가 아닌 프로세스까지 모두 보기";
+"Quit DevServers (⌘Q) · running servers keep running" = "DevServers 앱 종료 (⌘Q) · 실행 중인 서버는 그대로 유지돼요";
+
+/* 서버 한 줄 */
+"Open http://localhost:%@" = "http://localhost:%@ 열기";
+"Open in browser" = "브라우저로 열기";
+"Reveal in Finder\n%@" = "Finder에서 열기\n%@";
+"Stop server" = "서버 종료";

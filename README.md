@@ -129,8 +129,9 @@ Sources/
 ├─ devservers-scan/   CLI for checking scan results in the terminal
 └─ DevServers/        SwiftUI menu bar app (MenuBarExtra .window)
 Resources/Info.plist  bundle settings such as LSUIElement
+Resources/Icon/       app icon source (AppIcon.svg → AppIcon.icns)
 build.sh              builds the .app bundle + signing (Developer ID with SIGN_IDENTITY, otherwise ad-hoc; UNIVERSAL=1 for a universal binary)
-scripts/              package.sh (release zip) · update-cask.sh (Homebrew cask) · demo-servers.sh (demo servers)
+scripts/              package.sh (release zip) · update-cask.sh (Homebrew cask) · demo-servers.sh (demo servers) · make-icon.sh (app icon)
 docs/                 GitHub Pages website
 ```
 

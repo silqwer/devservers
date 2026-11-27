@@ -129,8 +129,9 @@ Sources/
 ├─ devservers-scan/   터미널 확인용 CLI
 └─ DevServers/        SwiftUI 메뉴바 앱 (MenuBarExtra .window)
 Resources/Info.plist  LSUIElement 등 번들 설정
+Resources/Icon/       앱 아이콘 원본 (AppIcon.svg → AppIcon.icns)
 build.sh              .app 번들 생성 + 서명 (SIGN_IDENTITY 가 있으면 Developer ID, 없으면 ad-hoc · UNIVERSAL=1 이면 유니버설)
-scripts/              package.sh (배포 zip) · update-cask.sh (Homebrew cask) · demo-servers.sh (데모 서버)
+scripts/              package.sh (배포 zip) · update-cask.sh (Homebrew cask) · demo-servers.sh (데모 서버) · make-icon.sh (앱 아이콘)
 docs/                 GitHub Pages 소개 페이지
 ```
 
